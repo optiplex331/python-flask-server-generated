@@ -1,7 +1,10 @@
+import os
+
 from pymongo import MongoClient
 
 # MongoDB setup
-client = MongoClient('mongodb://localhost:27017/')
+mongo_uri = os.getenv('MONGO_URI', 'mongodb://localhost:27017/school')
+client = MongoClient(mongo_uri)
 db = client.school
 student_collection = db.students
 
