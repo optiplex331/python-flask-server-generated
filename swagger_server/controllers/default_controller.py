@@ -8,19 +8,20 @@ from swagger_server.service.student_service import *
 
 
 def add_student(body=None):  # noqa: E501
-    """Add a new student
+        """Add a new student
 
-    Adds an item to the system # noqa: E501
+            Adds an item to the system # noqa: E501
 
-    :param body: Student item to add
-    :type body: dict | bytes
+            :param body: Student item to add
+            :type body: dict | bytes
 
-    :rtype: float
-    """
-    if connexion.request.is_json:
-        body = Student.from_dict(connexion.request.get_json())  # noqa: E501
-        return add(body)
-    return 500, 'error'
+            :rtype: float
+            """
+        if connexion.request.is_json:
+            body = connexion.request.get_json()  # Directly use the JSON from the request
+            result, status = add(body)  # Pass the dictionary directly to the service
+            return result, status
+        return 'Invalid input, body is not JSON', 400  # Return error if request is not in JSON format
 
 
 def delete_student(student_id):  # noqa: E501

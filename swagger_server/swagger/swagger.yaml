@@ -98,8 +98,8 @@ components:
       type: object
       properties:
         student_id:
-          type: integer
-          format: int64
+          type: number
+          format: integer
         first_name:
           type: string
         last_name:
