@@ -3,7 +3,7 @@ import os
 from pymongo import MongoClient
 
 # MongoDB setup
-mongo_uri = os.getenv('MONGO_URI', 'mongodb://mongo:27017/school')
+mongo_uri = os.getenv('MONGO_URI')
 client = MongoClient(mongo_uri)
 db = client.school
 student_collection = db.students

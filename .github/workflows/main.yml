@@ -18,7 +18,7 @@ jobs:
         docker-compose up -d
     - name: Wait for services to be ready
       run: |
-        sleep 30
+        sleep 10
     - name: Run API Tests
       id: run-newman
       uses: anthonyvscode/newman-action@v1
