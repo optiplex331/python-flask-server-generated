@@ -19,12 +19,10 @@ paths:
         Returns a single student
       operationId: get_student_by_id
       parameters:
-      - name: student_id
-        in: path
+      - in: path
+        name: student_id
         description: the uid
         required: true
-        style: simple
-        explode: false
         schema:
           type: number
           format: integer
@@ -39,7 +37,6 @@ paths:
           description: invalid ID
         "404":
           description: not found
-      x-openapi-router-controller: swagger_server.controllers.default_controller
     delete:
       summary: deletes a student
       description: |
@@ -66,8 +63,8 @@ paths:
   /student:
     post:
       summary: Add a new student
-      description: Adds an item to the system
       operationId: add_student
+      description: Adds an item to the system
       requestBody:
         description: Student item to add
         content:
@@ -133,4 +130,3 @@ components:
       example:
         grade: 6.0274563
         subject_name: subject_name
-
