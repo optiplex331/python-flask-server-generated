@@ -1,41 +1,36 @@
 import os
-import tempfile
-from functools import reduce
+from pymongo import MongoClient
+from bson.objectid import ObjectId
 
-from tinydb import TinyDB, Query
-
-db_dir_path = tempfile.gettempdir()
-db_file_path = os.path.join(db_dir_path, "students.json")
-student_db = TinyDB(db_file_path)
+# MongoDB setup
+client = MongoClient('mongodb://localhost:27017/')  # Connect to your MongoDB server
+db = client.school  # Use (or create) a database called 'school'
+student_collection = db.students  # Use (or create) a collection called 'students'
 
 
 def add(student=None):
-    queries = []
-    query = Query()
-    queries.append(query.first_name == student.first_name)
-    queries.append(query.last_name == student.last_name)
-    query = reduce(lambda a, b: a & b, queries)
-    res = student_db.search(query)
-    if res:
+    # Check if student already exists
+    if student_collection.find_one({'first_name': student['first_name'], 'last_name': student['last_name']}):
         return 'already exists', 409
 
-    doc_id = student_db.insert(student.to_dict())
-    student.student_id = doc_id
-    return student.student_id
+    # Insert new student
+    result = student_collection.insert_one(student)
+    return str(result.inserted_id), 200  # Convert ObjectId to string
 
 
 def get_by_id(student_id=None, subject=None):
-    student = student_db.get(doc_id=int(student_id))
+    # MongoDB uses '_id' as default key for the document identifier
+    student = student_collection.find_one({'_id': ObjectId(student_id)})
     if not student:
         return 'not found', 404
-    student['student_id'] = student_id
-    print(student)
-    return student
+
+    student['student_id'] = str(student['_id'])  # Convert ObjectId to string
+    del student['_id']  # Remove the original MongoDB identifier for response
+    return student, 200
 
 
 def delete(student_id=None):
-    student = student_db.get(doc_id=int(student_id))
-    if not student:
+    result = student_collection.delete_one({'_id': ObjectId(student_id)})
+    if result.deleted_count == 0:
         return 'not found', 404
-    student_db.remove(doc_ids=[int(student_id)])
-    return student_id
+    return student_id, 200
